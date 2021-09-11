@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="OfficeTools.Tools.CompareStyles"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OfficeTools.Tools"
+             xmlns:viewmodels="clr-namespace:OfficeTools.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewmodels:CompareStylesViewModel />
+    </UserControl.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*" />
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="60*" />
+        </Grid.ColumnDefinitions>         
+
+        <ListBox Grid.Column="0" MinWidth="100" Margin="2">
+
+        </ListBox>
+
+        <GridSplitter Grid.Column="1" Width="3" HorizontalAlignment="Stretch"/>
+
+        <DataGrid Grid.Column="2" Margin="2">
+
+        </DataGrid>
+
+    </Grid>
+</UserControl>

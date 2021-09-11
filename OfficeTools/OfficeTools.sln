@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31515.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeTools", "OfficeTools.csproj", "{42D052FB-0242-4947-A5B9-05E700D6FF74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42D052FB-0242-4947-A5B9-05E700D6FF74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42D052FB-0242-4947-A5B9-05E700D6FF74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42D052FB-0242-4947-A5B9-05E700D6FF74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42D052FB-0242-4947-A5B9-05E700D6FF74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F06A6D49-B379-410E-B67B-83D48ED253F5}
+	EndGlobalSection
+EndGlobal
