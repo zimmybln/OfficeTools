@@ -273,6 +273,8 @@ namespace OfficeTools.Extensions
         }
 
 
+
+
         public static DocumentFormat.OpenXml.Wordprocessing.Style GetDefaultStyle(
             this WordprocessingDocument wordprocessingDocument)
         {

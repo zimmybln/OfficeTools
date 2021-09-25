@@ -34,6 +34,15 @@ namespace OfficeTools.Test
 
                 foreach (Paragraph paragraph in body.Descendants<Paragraph>())
                 {
+                    var paragraphProperties = paragraph.Descendants<ParagraphProperties>().FirstOrDefault();
+
+                    if (paragraphProperties != null)
+                    {
+                        Console.WriteLine($"Style gefunden {paragraphProperties.ParagraphStyleId.Val}");
+                    }
+
+
+
                     var innerText = paragraph.InnerText;
 
                     if (!string.IsNullOrEmpty((innerText)))
@@ -85,6 +94,69 @@ namespace OfficeTools.Test
         {
             const string fileName = "Samples//DocumentWithContent.docx";
 
+            using (WordprocessingDocument wordDocument =
+                WordprocessingDocument.Open(fileName, false))
+            {
+                Document document = wordDocument.MainDocumentPart?.Document;
+
+                if (document == null)
+                    return;
+
+                Body body = document.Body;
+
+                if (body == null)
+                    return;
+
+                foreach (Paragraph paragraph in body.Descendants<Paragraph>())
+                {
+                    // Überprüfen, ob die Formatvorlage kursiv formattiert wurde
+                    var paragraphProperties = paragraph.Descendants<ParagraphProperties>().FirstOrDefault();
+
+                    if (paragraphProperties != null)
+                    {
+                        // Ermittle die Formatvorlage
+                        var style = wordDocument.MainDocumentPart?.StyleDefinitionsPart?.Styles
+                            .Elements<Style>().FirstOrDefault(st => st.Type == StyleValues.Paragraph
+                                                                    && st.StyleId.HasValue
+                                                                    && st.StyleId.Value.Equals(paragraphProperties.ParagraphStyleId?.Val));
+
+                        // Ermittle die Kursiv-Kennzeichnung
+                        var italicNode = style?.StyleRunProperties?.OfType<Italic>().FirstOrDefault();
+
+                        if (italicNode != null)
+                        {
+                            Console.WriteLine(paragraph.InnerText);
+                            continue;
+                        }
+                    }
+
+                    // Die einzelnen Bestandteile des Absatzes werden nur durchlaufen,
+                    // wenn nicht der Absatz mit einer Formatvorlage gekennzeichnet ist,
+                    // die kursiv formatiert wurde
+
+                    foreach (Run run in paragraph.Descendants<Run>())
+                    {
+                        // <Run><RunProperties><Bold>... 
+                        RunProperties runProperties = run.Descendants<RunProperties>().FirstOrDefault();
+
+                        if (runProperties == null)
+                            continue;
+
+                        if (runProperties.Bold != null && runProperties.Bold.Val?.Value != false)
+                        {
+                            Console.WriteLine($"{run.InnerText}");
+                        }
+                    }
+
+                }
+            }
+        }
+
+        [Test]
+        public void RetrieveItalicFormattedText()
+        {
+            const string fileName = "Samples//DocumentWithContent.docx";
+
             using (WordprocessingDocument output =
                 WordprocessingDocument.Open(fileName, false))
             {
@@ -100,7 +172,7 @@ namespace OfficeTools.Test
 
                 foreach (Run run in body.Descendants<Run>())
                 {
-                    // <Run><RunProperties><Bold>...
+                    // <Run><RunProperties><Bold>... 
 
                     string runDescriptor = String.Empty;
 
@@ -108,10 +180,10 @@ namespace OfficeTools.Test
 
                     if (runProperties == null)
                         continue;
-                    
-                    if (runProperties.Bold != null && runProperties.Bold.Val?.Value != false)
+
+                    if (runProperties.Italic != null && runProperties.Italic.Val?.Value != false)
                     {
-                        Console.WriteLine($"{run.InnerText}");    
+                        Console.WriteLine($"{run.InnerText}");
                     }
                 }
             }
