@@ -152,43 +152,6 @@ namespace OfficeTools.Test
             }
         }
 
-        [Test]
-        public void RetrieveItalicFormattedText()
-        {
-            const string fileName = "Samples//DocumentWithContent.docx";
-
-            using (WordprocessingDocument output =
-                WordprocessingDocument.Open(fileName, false))
-            {
-                Document document = output.MainDocumentPart?.Document;
-
-                if (document == null)
-                    return;
-
-                Body body = document.Body;
-
-                if (body == null)
-                    return;
-
-                foreach (Run run in body.Descendants<Run>())
-                {
-                    // <Run><RunProperties><Bold>... 
-
-                    string runDescriptor = String.Empty;
-
-                    RunProperties runProperties = run.Descendants<RunProperties>().FirstOrDefault();
-
-                    if (runProperties == null)
-                        continue;
-
-                    if (runProperties.Italic != null && runProperties.Italic.Val?.Value != false)
-                    {
-                        Console.WriteLine($"{run.InnerText}");
-                    }
-                }
-            }
-        }
-
         public void RetrieveParagraphStyleProperties()
         {
 

@@ -9,6 +9,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
+using OfficeTools.Extensions;
 using OpenXmlPowerTools;
 
 namespace OfficeTools.Test
@@ -59,8 +60,126 @@ namespace OfficeTools.Test
             {
 
             }
+        }
+
+        [Test]
+        public void CreateDocumentWithContentAsBoldFormattedText()
+        {
+            string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
+
+            try
+            {
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
 
 
+                using (WordprocessingDocument output = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
+                {
+                    output.AddMainDocumentPart();
+
+                    var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
+
+                    var run = new Run(text);
+                    run.RunProperties = new RunProperties()
+                    {
+                        Bold = new Bold()
+                    };
+                    
+
+                    var paragraph = new Paragraph(run);
+
+                    var body = new Body(paragraph);
+
+                    output.MainDocumentPart.Document = new Document(body);
+
+                    output.Save();
+                }
+
+
+                Assert.IsTrue(File.Exists(fileName));
+            }
+            finally
+            {
+
+            }
+        }
+
+        [Test]
+        public void CreateDocumentWithContentAsBoldFormattedStyle()
+        {
+            string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
+
+            try
+            {
+                if (File.Exists(fileName))
+                    File.Delete(fileName);
+
+
+                using (WordprocessingDocument document = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
+                {
+                    document.AddMainDocumentPart();
+
+                    if (document.MainDocumentPart == null)
+                        throw new InvalidOperationException();
+
+                    // Hinzufügen der Stylesinformationen
+                    
+
+                    // Erstellen eines Styles
+                    Style styleWithBold = new Style()
+                    {
+                        Type = StyleValues.Paragraph,
+                        StyleId = "AlsFettFormatierteVorlage",
+                        CustomStyle = true,
+                        Default = false,
+                        StyleName = new StyleName()
+                        {
+                            Val = "Als Fett formatierte Vorlage"
+                        },
+                        StyleRunProperties = new StyleRunProperties()
+                        {
+                            Bold = new Bold()
+                        }
+                    };
+                    
+                    // Erstellen der Dokumentinformationen für Styles
+                    StyleDefinitionsPart stylesPart = document.MainDocumentPart.AddNewPart<StyleDefinitionsPart>();
+
+                    stylesPart.Styles = new Styles();
+
+                    stylesPart.Styles.Append(styleWithBold);
+                    
+                    // Erstellen des Textes
+                    var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
+
+                    var run = new Run(text);
+
+                    // Erstellen des Absatzes mit dem Verweis auf die erstellte Formatvorlage
+                    var paragraph = new Paragraph(run)
+                    {
+                        ParagraphProperties = new ParagraphProperties()
+                        {
+                            ParagraphStyleId = new ParagraphStyleId()
+                            {
+                                Val = "AlsFettFormatierteVorlage"
+                            }
+                        }
+                    };
+
+                    var body = new Body(paragraph);
+
+                    document.MainDocumentPart.Document = new Document(body);
+
+                    document.Save();
+                }
+
+
+                Assert.IsTrue(File.Exists(fileName));
+            }
+            finally
+            {
+
+            }
         }
 
 
@@ -103,22 +222,6 @@ namespace OfficeTools.Test
 
         }
 
-        [Test]
-        public void CreateDocumentWithProperties()
-        {
-            throw new NotImplementedException();
-        }
 
-        [Test]
-        public void CreateDocumentWithStyles()
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void MergeDocuments()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

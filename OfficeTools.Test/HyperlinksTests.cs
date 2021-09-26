@@ -22,6 +22,11 @@ namespace OfficeTools.Test
 
             var hyperLinkRelations = document.MainDocumentPart.HyperlinkRelationships.ToList();
 
+            foreach (HyperlinkRelationship relationShip in hyperLinkRelations)
+            {
+                Console.WriteLine($"Type {relationShip.RelationshipType}, Id {relationShip.Id}, Uri: {relationShip.Uri}, IsExternal {relationShip.IsExternal}");
+            }
+            
             // HyperlinkRelationship 
             foreach (var hyperlink in document.MainDocumentPart.Document.Body.Descendants<Hyperlink>())
             {
@@ -53,7 +58,7 @@ namespace OfficeTools.Test
         public void CreateHyperlink()
         {
 
-            const string fileName = "Files//createhyperlink.docx";
+            const string fileName = "Samples//createhyperlink.docx";
 
             if (File.Exists(fileName))
                 File.Delete(fileName);
