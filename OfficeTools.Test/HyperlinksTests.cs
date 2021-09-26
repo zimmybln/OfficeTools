@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
@@ -26,7 +27,7 @@ namespace OfficeTools.Test
             {
                 Console.WriteLine($"Type {relationShip.RelationshipType}, Id {relationShip.Id}, Uri: {relationShip.Uri}, IsExternal {relationShip.IsExternal}");
             }
-            
+
             // HyperlinkRelationship 
             foreach (var hyperlink in document.MainDocumentPart.Document.Body.Descendants<Hyperlink>())
             {
@@ -58,49 +59,54 @@ namespace OfficeTools.Test
         public void CreateHyperlink()
         {
 
-            const string fileName = "Samples//createhyperlink.docx";
+             string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
 
             if (File.Exists(fileName))
                 File.Delete(fileName);
 
-            using (OpenXmlMemoryStreamDocument streamDoc = OpenXmlMemoryStreamDocument.CreateWordprocessingDocument())
+
+            using (WordprocessingDocument document = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
             {
-                using (WordprocessingDocument output = streamDoc.GetWordprocessingDocument())
+                document.AddMainDocumentPart();
+
+                if (document.MainDocumentPart == null)
+                    throw new InvalidOperationException();
+
+                // Erstellen eines Textes und hinzufügen zu einem Absatz
+                var text = new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}");
+
+                var run = new Run(text);
+
+                var paragraph = new Paragraph(run);
+
+
+                HyperlinkRelationship hr = document.MainDocumentPart.AddHyperlinkRelationship(new Uri("http://www.microsoft.com"), true);
+                var relationshipId = hr.Id;
+
+                Hyperlink hyperlink = new Hyperlink()
                 {
-                    var paragraph = new Paragraph(
-                        new Run(
-                            new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}")
-                        )
-                    );
+                    Id = relationshipId
+                };
+
+                hyperlink.AppendChild(new Run(
+                        new RunProperties(
+                                new RunStyle() { Val = "Hyperlink" },
+                                                  new Color { ThemeColor = ThemeColorValues.Hyperlink }),
+                                          new Text("Hier geht es zu Microsoft") { Space = SpaceProcessingModeValues.Preserve }));
+
+                var paragraphWithHyperlink = new Paragraph();
+
+                paragraphWithHyperlink.AppendChild(hyperlink);
+
+                var body = new Body();
+                body.AppendChild(paragraph);
+                body.AppendChild(paragraphWithHyperlink);
 
 
-                    output.MainDocumentPart.Document =
-                        new Document(
-                            new Body(paragraph)
-                         );
-
-                    paragraph.AppendChild(output.PrepareHyperlink("Hier geht es zu Microsoft", new Uri("http://www.microsoft.com"), "Das ist ein Tooltip für den Link"));
-
-                    output.SaveAs(fileName);
-                }
+                document.MainDocumentPart.Document = new Document(body);
+                document.Save();
             }
+
         }
-
-        //private static Hyperlink CreateDocumentHyperlink(MainDocumentPart mainPart, string url, string text)
-        //{
-
-        //    HyperlinkRelationship hr = mainPart.AddHyperlinkRelationship(new Uri(url), true);
-        //    string hrContactId = hr.Id;
-        //    return
-        //        new Hyperlink(
-        //            new ProofError() { Type = ProofingErrorValues.GrammarStart },
-        //            new Run(
-        //                new RunProperties(
-        //                    new RunStyle() { Val = "Hyperlink" },
-        //                    new Color { ThemeColor = ThemeColorValues.Hyperlink }),
-        //                new Text(text) { Space = SpaceProcessingModeValues.Preserve }
-        //            ))
-        //        { History = OnOffValue.FromBoolean(true), Id = hrContactId };
-        //}
     }
 }
