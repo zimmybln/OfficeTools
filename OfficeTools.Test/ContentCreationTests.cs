@@ -30,36 +30,29 @@ namespace OfficeTools.Test
         {
             const string fileName = "Samples//created_content.docx";
 
-            try
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+
+            using (WordprocessingDocument output = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
             {
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
+                output.AddMainDocumentPart();
 
-                
-                using (WordprocessingDocument output = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
-                {
-                    output.AddMainDocumentPart();
+                var text = new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}");
 
-                    var text = new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}");
+                var run = new Run(text);
 
-                    var run = new Run(text);
+                var paragraph = new Paragraph(run);
 
-                    var paragraph = new Paragraph(run);
+                var body = new Body(paragraph);
 
-                    var body = new Body(paragraph);
+                output.MainDocumentPart.Document = new Document(body);
 
-                    output.MainDocumentPart.Document = new Document(body);
-
-                    output.Save();
-                }
-
-
-                Assert.IsTrue(File.Exists(fileName));
+                output.Save();
             }
-            finally
-            {
 
-            }
+
+            Assert.IsTrue(File.Exists(fileName));
         }
 
         [Test]
@@ -67,41 +60,34 @@ namespace OfficeTools.Test
         {
             string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
 
-            try
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+
+            using (WordprocessingDocument output = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
             {
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
+                output.AddMainDocumentPart();
 
+                var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
 
-                using (WordprocessingDocument output = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
+                var run = new Run(text);
+                run.RunProperties = new RunProperties()
                 {
-                    output.AddMainDocumentPart();
-
-                    var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
-
-                    var run = new Run(text);
-                    run.RunProperties = new RunProperties()
-                    {
-                        Bold = new Bold()
-                    };
-                    
-
-                    var paragraph = new Paragraph(run);
-
-                    var body = new Body(paragraph);
-
-                    output.MainDocumentPart.Document = new Document(body);
-
-                    output.Save();
-                }
+                    Bold = new Bold()
+                };
 
 
-                Assert.IsTrue(File.Exists(fileName));
+                var paragraph = new Paragraph(run);
+
+                var body = new Body(paragraph);
+
+                output.MainDocumentPart.Document = new Document(body);
+
+                output.Save();
             }
-            finally
-            {
 
-            }
+
+            Assert.IsTrue(File.Exists(fileName));
         }
 
         [Test]
@@ -109,77 +95,71 @@ namespace OfficeTools.Test
         {
             string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
 
-            try
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+
+            using (WordprocessingDocument document = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
             {
-                if (File.Exists(fileName))
-                    File.Delete(fileName);
+                document.AddMainDocumentPart();
+
+                if (document.MainDocumentPart == null)
+                    throw new InvalidOperationException();
+
+                // Hinzufügen der Stylesinformationen
 
 
-                using (WordprocessingDocument document = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
+                // Erstellen eines Styles
+                Style styleWithBold = new Style()
                 {
-                    document.AddMainDocumentPart();
-
-                    if (document.MainDocumentPart == null)
-                        throw new InvalidOperationException();
-
-                    // Hinzufügen der Stylesinformationen
-                    
-
-                    // Erstellen eines Styles
-                    Style styleWithBold = new Style()
+                    Type = StyleValues.Paragraph,
+                    StyleId = "AlsFettFormatierteVorlage",
+                    CustomStyle = true,
+                    Default = false,
+                    StyleName = new StyleName()
                     {
-                        Type = StyleValues.Paragraph,
-                        StyleId = "AlsFettFormatierteVorlage",
-                        CustomStyle = true,
-                        Default = false,
-                        StyleName = new StyleName()
-                        {
-                            Val = "Als Fett formatierte Vorlage"
-                        },
-                        StyleRunProperties = new StyleRunProperties()
-                        {
-                            Bold = new Bold()
-                        }
-                    };
-                    
-                    // Erstellen der Dokumentinformationen für Styles
-                    StyleDefinitionsPart stylesPart = document.MainDocumentPart.AddNewPart<StyleDefinitionsPart>();
-
-                    stylesPart.Styles = new Styles();
-
-                    stylesPart.Styles.Append(styleWithBold);
-                    
-                    // Erstellen des Textes
-                    var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
-
-                    var run = new Run(text);
-
-                    // Erstellen des Absatzes mit dem Verweis auf die erstellte Formatvorlage
-                    var paragraph = new Paragraph(run)
+                        Val = "Als Fett formatierte Vorlage"
+                    },
+                    StyleRunProperties = new StyleRunProperties()
                     {
-                        ParagraphProperties = new ParagraphProperties()
+                        Bold = new Bold()
+                    }
+                };
+
+                // Erstellen der Dokumentinformationen für Styles
+                StyleDefinitionsPart stylesPart = document.MainDocumentPart.AddNewPart<StyleDefinitionsPart>();
+
+                stylesPart.Styles = new Styles();
+
+                stylesPart.Styles.Append(styleWithBold);
+
+                // Erstellen des Textes
+                var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
+
+                var run = new Run(text);
+
+                // Erstellen des Absatzes mit dem Verweis auf die erstellte Formatvorlage
+                var paragraph = new Paragraph(run)
+                {
+                    ParagraphProperties = new ParagraphProperties()
+                    {
+                        ParagraphStyleId = new ParagraphStyleId()
                         {
-                            ParagraphStyleId = new ParagraphStyleId()
-                            {
-                                Val = "AlsFettFormatierteVorlage"
-                            }
+                            Val = "AlsFettFormatierteVorlage"
                         }
-                    };
+                    }
+                };
 
-                    var body = new Body(paragraph);
+                var body = new Body(paragraph);
 
-                    document.MainDocumentPart.Document = new Document(body);
+                document.MainDocumentPart.Document = new Document(body);
 
-                    document.Save();
-                }
-
-
-                Assert.IsTrue(File.Exists(fileName));
+                document.Save();
             }
-            finally
-            {
 
-            }
+
+            Assert.IsTrue(File.Exists(fileName));
+
         }
 
 
