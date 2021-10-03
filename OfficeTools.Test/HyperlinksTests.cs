@@ -21,6 +21,10 @@ namespace OfficeTools.Test
         {
             using WordprocessingDocument document = WordprocessingDocument.Open("Samples//HyperlinkDocument.docx", false);
 
+            // MailMergeFieldType
+
+            
+
             var hyperLinkRelations = document.MainDocumentPart.HyperlinkRelationships.ToList();
 
             foreach (HyperlinkRelationship relationShip in hyperLinkRelations)
@@ -41,6 +45,18 @@ namespace OfficeTools.Test
                     Console.WriteLine($"Target = {hyperlinkRelation.Uri}");
                 }
             }
+        }
+
+        [Test]
+        public void CollectHyperlinksByExtension()
+        {
+            using WordprocessingDocument document = WordprocessingDocument.Open("Samples//HyperlinkDocument.docx", false);
+            
+            document.MainDocumentPart.ListHyperlinks((id, target, text) =>
+            {
+                Console.WriteLine($"Hyperlink: Id: '{id}', Text: '{text}', Target: {target}");
+            });
+
         }
 
         [Test]

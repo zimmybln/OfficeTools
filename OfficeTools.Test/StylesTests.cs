@@ -32,6 +32,7 @@ namespace OfficeTools.Test
                 {
                     Console.WriteLine($"Style: {style.StyleName.Val}");
 
+                    
                     if (style.StyleRunProperties == null)
                     {
                         Console.WriteLine("\tKeine Eigenschaften vorhanden");
@@ -49,11 +50,8 @@ namespace OfficeTools.Test
                     Console.WriteLine($"\tBold {style.IsBold()}");
                     Console.WriteLine($"\tItalic {style.GetItalic()}");
                     Console.WriteLine($"\tFontsize {style.GetFontSize()}");
+                  
 
-                    //foreach (var property in style.StyleRunProperties.OfType<Bold>())
-                    //{
-                    //    Console.WriteLine($"\tTyp {property.LocalName}");
-                    //}
                 }
             }
 
