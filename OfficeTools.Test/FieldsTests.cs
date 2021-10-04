@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace OfficeTools.Test
         [Test]
         public void CollectFields()
         {
-            using WordprocessingDocument document = WordprocessingDocument.Open("Samples//FieldDokument2.docx", false);
+            using WordprocessingDocument document = WordprocessingDocument.Open("Samples//DocumentWithFields.docx", false);
 
             foreach (SimpleField simpleField in document.MainDocumentPart.Document.Body.Descendants<SimpleField>())
             {
