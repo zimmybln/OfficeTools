@@ -17,10 +17,10 @@ namespace OfficeTools.Test
         public void CollectFields()
         {
             using WordprocessingDocument document = WordprocessingDocument.Open("Samples//DocumentWithFields.docx", false);
-
-            foreach (SimpleField simpleField in document.MainDocumentPart.Document.Body.Descendants<SimpleField>())
+            
+            foreach (FieldCode simpleField in document.MainDocumentPart.Document.Body.Descendants<FieldCode>())
             {
-                Console.WriteLine($"Feld: {simpleField.Instruction}");
+                Console.WriteLine($"Feld: {simpleField.InnerText}");
             }
 
         }
