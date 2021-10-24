@@ -28,7 +28,7 @@ namespace OfficeTools.Test
         [Test]
         public void CreateDocumentWithContent()
         {
-            const string fileName = "Samples//created_content.docx";
+            string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
 
             if (File.Exists(fileName))
                 File.Delete(fileName);
@@ -47,7 +47,7 @@ namespace OfficeTools.Test
                 var body = new Body(paragraph);
 
                 output.MainDocumentPart.Document = new Document(body);
-
+                
                 output.Save();
             }
 
@@ -166,7 +166,7 @@ namespace OfficeTools.Test
         [Test]
         public void CreateDocumentWithContent_PT()
         {
-            const string fileName = "Samples//created_content_pt.docx";
+            string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
 
             try
             {
