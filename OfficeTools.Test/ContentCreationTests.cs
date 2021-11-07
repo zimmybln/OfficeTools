@@ -162,6 +162,91 @@ namespace OfficeTools.Test
 
         }
 
+        [Test]
+        public void CreateDocumentFailingByDoubleStyle()
+        {
+            string fileName = $"Samples//created_{MethodBase.GetCurrentMethod()?.Name}.docx";
+
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+
+            using (WordprocessingDocument document = WordprocessingDocument.Create(fileName, WordprocessingDocumentType.Document))
+            {
+                document.AddMainDocumentPart();
+
+                if (document.MainDocumentPart == null)
+                    throw new InvalidOperationException();
+
+                // Erstellen eines Styles
+                Style styleWithBold_First = new Style()
+                {
+                    Type = StyleValues.Paragraph,
+                    StyleId = "AlsFettFormatierteVorlage",
+                    CustomStyle = true,
+                    Default = false,
+                    StyleName = new StyleName()
+                    {
+                        Val = "Als Fett formatierte Vorlage"
+                    },
+                    StyleRunProperties = new StyleRunProperties()
+                    {
+                        Bold = new Bold()
+                    }
+                };
+
+                Style styleWithBold_Second = new Style()
+                {
+                    Type = StyleValues.Paragraph,
+                    StyleId = "AlsFettFormatierteVorlage",
+                    CustomStyle = true,
+                    Default = false,
+                    StyleName = new StyleName()
+                    {
+                        Val = "Als Fett formatierte Vorlage"
+                    },
+                    StyleRunProperties = new StyleRunProperties()
+                    {
+                        Bold = new Bold()
+                    }
+                };
+
+                // Erstellen der Dokumentinformationen für Styles
+                StyleDefinitionsPart stylesPart = document.MainDocumentPart.AddNewPart<StyleDefinitionsPart>();
+
+                stylesPart.Styles = new Styles();
+
+                stylesPart.Styles.Append(styleWithBold_First);
+                stylesPart.Styles.Append(styleWithBold_Second);
+
+                // Erstellen des Textes
+                var text = new Text($"Test {MethodBase.GetCurrentMethod()?.Name} {DateTime.Now.ToString()}");
+
+                var run = new Run(text);
+
+                // Erstellen des Absatzes mit dem Verweis auf die erstellte Formatvorlage
+                var paragraph = new Paragraph(run)
+                {
+                    ParagraphProperties = new ParagraphProperties()
+                    {
+                        ParagraphStyleId = new ParagraphStyleId()
+                        {
+                            Val = "AlsFettFormatierteVorlage"
+                        }
+                    }
+                };
+
+                var body = new Body(paragraph);
+
+                document.MainDocumentPart.Document = new Document(body);
+
+                document.Save();
+            }
+
+
+            Assert.IsTrue(File.Exists(fileName));
+
+        }
 
         [Test]
         public void CreateDocumentWithContent_PT()
