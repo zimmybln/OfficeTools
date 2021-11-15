@@ -121,9 +121,9 @@ namespace OfficeTools.Test
                                                                     && st.StyleId.Value.Equals(paragraphProperties.ParagraphStyleId?.Val));
 
                         // Ermittle die Kursiv-Kennzeichnung
-                        var italicNode = style?.StyleRunProperties?.OfType<Italic>().FirstOrDefault();
+                        var boldNode = style?.StyleRunProperties?.OfType<Bold>().FirstOrDefault();
 
-                        if (italicNode != null)
+                        if (boldNode != null && boldNode.Val?.Value == true)
                         {
                             Console.WriteLine(paragraph.InnerText);
                             continue;
@@ -136,13 +136,12 @@ namespace OfficeTools.Test
 
                     foreach (Run run in paragraph.Descendants<Run>())
                     {
-                        // <Run><RunProperties><Bold>... 
                         RunProperties runProperties = run.Descendants<RunProperties>().FirstOrDefault();
 
                         if (runProperties == null)
                             continue;
 
-                        if (runProperties.Bold != null && runProperties.Bold.Val?.Value != false)
+                        if (runProperties.Bold != null && runProperties.Bold.Val?.Value == true)
                         {
                             Console.WriteLine($"{run.InnerText}");
                         }
