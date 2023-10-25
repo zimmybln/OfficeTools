@@ -38,7 +38,7 @@ namespace OfficeTools.Test
             {
                 output.AddMainDocumentPart();
 
-                var text = new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}");
+                                var text = new Text($"Test {MethodBase.GetCurrentMethod().Name} {DateTime.Now.ToString()}");
 
                 var run = new Run(text);
 
